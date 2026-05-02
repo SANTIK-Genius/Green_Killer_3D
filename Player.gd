@@ -8,9 +8,9 @@ extends CharacterBody3D
 @export var standing_height: float = 1.25
 @export var crouch_height: float = 0.95
 @export var crouch_transition_speed: float = 10.0
-@export var breathing_speed: float = 1.6
-@export var breathing_amount: float = 0.025
-@export var sway_amount: float = 0.01
+@export var breathing_speed: float = 1.2
+@export var breathing_amount: float = 0.006
+@export var sway_amount: float = 0.0
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera: Camera3D = $CameraPivot/Camera3D
@@ -31,6 +31,7 @@ func _ready() -> void:
 		capsule.height = standing_height
 		capsule.radius = 0.35
 	camera_pivot.position.y = standing_height
+	camera.position.z = -0.18
 	body_mesh.position.y = -0.1
 	_hide_first_person_head_items(body_mesh)
 
@@ -100,4 +101,4 @@ func _apply_breathing_fx(delta: float) -> void:
 	if screen_fx and screen_fx.material is ShaderMaterial:
 		var mat := screen_fx.material as ShaderMaterial
 		mat.set_shader_parameter("vignette_strength", 0.58)
-		mat.set_shader_parameter("blur_strength", 0.07 + max(0.0, breath) * 0.08)
+		mat.set_shader_parameter("blur_strength", 0.02 + max(0.0, breath) * 0.03)
