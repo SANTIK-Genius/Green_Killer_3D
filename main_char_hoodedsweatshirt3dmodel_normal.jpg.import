@@ -1,0 +1,38 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://c7xm7y8qy2j50"
+path.s3tc="res://.godot/imported/main_char_hoodedsweatshirt3dmodel_normal.jpg-7002fb0e57fc68c3e3c5642dd1428a5f.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "c3df75c37437bc8042cc410e71228a11"
+}
+
+[deps]
+
+source_file="res://main_char_hoodedsweatshirt3dmodel_normal.jpg"
+dest_files=["res://.godot/imported/main_char_hoodedsweatshirt3dmodel_normal.jpg-7002fb0e57fc68c3e3c5642dd1428a5f.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=1
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=1
+roughness/src_normal="res://main_char_hoodedsweatshirt3dmodel_normal.jpg"
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0
