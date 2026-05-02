@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ctxv8n1t4dykq"]
+[gd_scene load_steps=23 format=3 uid="uid://ctxv8n1t4dykq"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_aw8rj"]
 [ext_resource type="PackedScene" path="res://main_char.glb" id="2_dqiey"]
@@ -77,6 +77,30 @@ material = SubResource("6")
 [sub_resource type="BoxMesh" id="19"]
 size = Vector3(0.5, 1.8, 2.4)
 material = SubResource("6")
+
+
+[sub_resource type="Shader" id="20"]
+code = "shader_type canvas_item;
+uniform float vignette_strength : hint_range(0.0, 1.0) = 0.55;
+uniform float blur_strength : hint_range(0.0, 1.0) = 0.0;
+void fragment() {
+	vec2 uv = SCREEN_UV;
+	vec2 center = vec2(0.5);
+	float dist = distance(uv, center);
+	vec4 col = texture(SCREEN_TEXTURE, uv);
+	if (blur_strength > 0.001) {
+		vec2 dir = normalize(uv - center) * 0.0025 * blur_strength;
+		col += texture(SCREEN_TEXTURE, uv + dir);
+		col += texture(SCREEN_TEXTURE, uv - dir);
+		col /= 3.0;
+	}
+	float vignette = smoothstep(0.25, 0.85, dist);
+	col.rgb *= 1.0 - vignette * vignette_strength;
+	COLOR = col;
+}" 
+
+[sub_resource type="ShaderMaterial" id="21"]
+shader = SubResource("20")
 
 [node name="Main" type="Node3D"]
 
@@ -215,6 +239,20 @@ shape = SubResource("2")
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
 current = true
 near = 0.03
+
+
+[node name="EffectsLayer" type="CanvasLayer" parent="Player/CameraPivot/Camera3D"]
+layer = 10
+
+[node name="VignetteBlur" type="ColorRect" parent="Player/CameraPivot/Camera3D/EffectsLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+material = SubResource("21")
+color = Color(1, 1, 1, 0)
 
 [node name="MainChar" parent="Player" instance=ExtResource("2_dqiey")]
 transform = Transform3D(0, 0, 1.6, 0, 1.6, 0, -1.6, 0, 0, 0, 0.95, 0)

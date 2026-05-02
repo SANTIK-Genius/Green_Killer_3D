@@ -8,16 +8,21 @@ extends CharacterBody3D
 @export var standing_height: float = 1.25
 @export var crouch_height: float = 0.95
 @export var crouch_transition_speed: float = 10.0
+@export var breathing_speed: float = 1.6
+@export var breathing_amount: float = 0.025
+@export var sway_amount: float = 0.01
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera: Camera3D = $CameraPivot/Camera3D
 @onready var collider: CollisionShape3D = $CollisionShape3D
 @onready var body_mesh: Node3D = $MainChar
+@onready var screen_fx: ColorRect = $CameraPivot/Camera3D/EffectsLayer/VignetteBlur
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var yaw: float = 0.0
 var pitch: float = 0.0
 var is_crouching: bool = false
+var breath_time: float = 0.0
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -26,9 +31,8 @@ func _ready() -> void:
 		capsule.height = standing_height
 		capsule.radius = 0.35
 	camera_pivot.position.y = standing_height
-	# Slightly lower the imported model so the feet touch the floor.
 	body_mesh.position.y = -0.1
-	_hide_first_person_hood(body_mesh)
+	_hide_first_person_head_items(body_mesh)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -75,12 +79,25 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, current_speed)
 		velocity.z = move_toward(velocity.z, 0.0, current_speed)
 
+	_apply_breathing_fx(delta)
 	move_and_slide()
 
-func _hide_first_person_hood(node: Node) -> void:
+func _hide_first_person_head_items(node: Node) -> void:
 	if node is GeometryInstance3D:
 		var lower_name := node.name.to_lower()
-		if "hood" in lower_name or "cap" in lower_name:
+		if "hood" in lower_name or "cap" in lower_name or "head" in lower_name or "hair" in lower_name or "helmet" in lower_name:
 			(node as GeometryInstance3D).visible = false
 	for child in node.get_children():
-		_hide_first_person_hood(child)
+		_hide_first_person_head_items(child)
+
+func _apply_breathing_fx(delta: float) -> void:
+	breath_time += delta * breathing_speed
+	var breath := sin(breath_time)
+	var sway := cos(breath_time * 0.7)
+	camera.position.y = breath * breathing_amount
+	camera.position.x = sway * sway_amount
+
+	if screen_fx and screen_fx.material is ShaderMaterial:
+		var mat := screen_fx.material as ShaderMaterial
+		mat.set_shader_parameter("vignette_strength", 0.58)
+		mat.set_shader_parameter("blur_strength", 0.07 + max(0.0, breath) * 0.08)
