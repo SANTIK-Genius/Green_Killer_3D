@@ -81,20 +81,19 @@ material = SubResource("6")
 
 [sub_resource type="Shader" id="20"]
 code = "shader_type canvas_item;
-uniform float vignette_strength : hint_range(0.0, 1.0) = 0.55;
+uniform sampler2D screen_tex : hint_screen_texture, repeat_disable, filter_linear_mipmap;
+uniform float vignette_strength : hint_range(0.0, 1.0) = 0.6;
 uniform float blur_strength : hint_range(0.0, 1.0) = 0.0;
 void fragment() {
 	vec2 uv = SCREEN_UV;
 	vec2 center = vec2(0.5);
 	float dist = distance(uv, center);
-	vec4 col = texture(SCREEN_TEXTURE, uv);
-	if (blur_strength > 0.001) {
-		vec2 dir = normalize(uv - center) * 0.0025 * blur_strength;
-		col += texture(SCREEN_TEXTURE, uv + dir);
-		col += texture(SCREEN_TEXTURE, uv - dir);
-		col /= 3.0;
-	}
-	float vignette = smoothstep(0.25, 0.85, dist);
+	vec2 blur = normalize(uv - center) * 0.003 * blur_strength;
+	vec4 col = textureLod(screen_tex, uv, 0.0);
+	col += textureLod(screen_tex, uv + blur, 0.0);
+	col += textureLod(screen_tex, uv - blur, 0.0);
+	col /= 3.0;
+	float vignette = smoothstep(0.22, 0.9, dist);
 	col.rgb *= 1.0 - vignette * vignette_strength;
 	COLOR = col;
 }" 
@@ -238,7 +237,7 @@ shape = SubResource("2")
 
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
 current = true
-near = 0.03
+near = 0.12
 
 
 [node name="EffectsLayer" type="CanvasLayer" parent="Player/CameraPivot/Camera3D"]
