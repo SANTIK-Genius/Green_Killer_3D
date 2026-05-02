@@ -217,3 +217,4 @@ current = true
 near = 0.03
 
 [node name="MainChar" parent="Player" instance=ExtResource("2_dqiey")]
+transform = Transform3D(0, 0, -1.6, 0, 1.6, 0, 1.6, 0, 0, 0, 0, 0)
