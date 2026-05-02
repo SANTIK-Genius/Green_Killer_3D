@@ -31,9 +31,8 @@ func _ready() -> void:
 		capsule.height = standing_height
 		capsule.radius = 0.35
 	camera_pivot.position.y = standing_height
-	camera.position.z = -0.18
-	body_mesh.position.y = -0.1
-	_hide_first_person_head_items(body_mesh)
+	camera.position.z = -0.28
+	body_mesh.position.y = -0.42
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
