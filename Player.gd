@@ -5,8 +5,8 @@ extends CharacterBody3D
 @export var crouch_speed: float = 2.0
 @export var jump_velocity: float = 4.5
 @export var mouse_sensitivity: float = 0.0025
-@export var standing_height: float = 1.75
-@export var crouch_height: float = 1.1
+@export var standing_height: float = 1.62
+@export var crouch_height: float = 1.18
 @export var crouch_transition_speed: float = 10.0
 
 @onready var camera_pivot: Node3D = $CameraPivot
@@ -25,7 +25,7 @@ func _ready() -> void:
 	if capsule:
 		capsule.height = standing_height
 		capsule.radius = 0.35
-	camera_pivot.position.y = standing_height - 0.1
+	camera_pivot.position.y = standing_height
 	# Slightly lower the imported model so the feet touch the floor.
 	body_mesh.position.y = -0.88
 
@@ -55,7 +55,7 @@ func _physics_process(delta: float) -> void:
 	if capsule:
 		capsule.height = move_toward(capsule.height, target_height, crouch_transition_speed * delta)
 
-	var target_camera_y := (crouch_height if is_crouching else standing_height) - 0.1
+	var target_camera_y := crouch_height if is_crouching else standing_height
 	camera_pivot.position.y = move_toward(camera_pivot.position.y, target_camera_y, crouch_transition_speed * delta)
 
 	var move_input := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
