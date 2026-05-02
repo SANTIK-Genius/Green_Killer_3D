@@ -27,7 +27,7 @@ func _ready() -> void:
 		capsule.radius = 0.35
 	camera_pivot.position.y = standing_height
 	# Slightly lower the imported model so the feet touch the floor.
-	body_mesh.position.y = -0.95
+	body_mesh.position.y = -0.1
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
