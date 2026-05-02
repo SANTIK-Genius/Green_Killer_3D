@@ -98,6 +98,8 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="21"]
 shader = SubResource("20")
+shader_parameter/vignette_strength = 0.6
+shader_parameter/blur_strength = 0.0
 
 [node name="Main" type="Node3D"]
 
