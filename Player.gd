@@ -108,7 +108,7 @@ func _collect_visual_bounds(root: Node3D) -> AABB:
 
 	var stack: Array[Node3D] = [root]
 	while not stack.is_empty():
-		var current := stack.pop_back()
+		var current = stack.pop_back()
 		if current is VisualInstance3D:
 			var visual := current as VisualInstance3D
 			var local_aabb := visual.get_aabb()

@@ -1,9 +1,9 @@
-[gd_scene load_steps=26 format=3 uid="uid://ctxv8n1t4dykq"]
+[gd_scene load_steps=23 format=3 uid="uid://ctxv8n1t4dykq"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_aw8rj"]
 [ext_resource type="PackedScene" uid="uid://b7umt7k32jijj" path="res://main_char.glb" id="2_dqiey"]
-[ext_resource type="PackedScene" path="res://chair.glb" id="3_chair"]
-[ext_resource type="Mesh" path="res://table.obj" id="4_table"]
+[ext_resource type="PackedScene" uid="uid://d1pbft4um7hd4" path="res://chair.glb" id="3_chair"]
+[ext_resource type="ArrayMesh" uid="uid://b0cajcwyykk71" path="res://table.obj" id="4_table"]
 
 [sub_resource type="Environment" id="1"]
 background_mode = 1
@@ -54,18 +54,6 @@ size = Vector3(0.3, 3, 14)
 [sub_resource type="StandardMaterial3D" id="6"]
 albedo_color = Color(0.42, 0.26, 0.18, 1)
 roughness = 0.7
-
-[sub_resource type="BoxMesh" id="15"]
-material = SubResource("6")
-size = Vector3(1.8, 0.12, 1)
-
-[sub_resource type="BoxMesh" id="16"]
-material = SubResource("6")
-size = Vector3(0.1, 0.7, 0.1)
-
-[sub_resource type="BoxMesh" id="17"]
-material = SubResource("6")
-size = Vector3(0.6, 0.08, 0.6)
 
 [sub_resource type="BoxMesh" id="18"]
 material = SubResource("6")
