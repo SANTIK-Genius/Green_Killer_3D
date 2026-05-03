@@ -33,6 +33,7 @@ func _ready() -> void:
 	camera_pivot.position.y = standing_height
 	camera.position.z = -0.42
 	body_mesh.position.y = -0.42
+	_set_body_shadows_only(body_mesh)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -101,3 +102,10 @@ func _apply_breathing_fx(delta: float) -> void:
 		var mat := screen_fx.material as ShaderMaterial
 		mat.set_shader_parameter("vignette_strength", 0.78)
 		mat.set_shader_parameter("blur_strength", 0.02 + max(0.0, breath) * 0.03)
+
+func _set_body_shadows_only(node: Node) -> void:
+	if node is GeometryInstance3D:
+		var geometry := node as GeometryInstance3D
+		geometry.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+	for child in node.get_children():
+		_set_body_shadows_only(child)
