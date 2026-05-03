@@ -6,7 +6,9 @@ extends CharacterBody3D
 @export var min_pitch_degrees: float = -80.0
 @export var max_pitch_degrees: float = 80.0
 
+@export var auto_calibrate_body_height: bool = true
 @export var standing_eye_height: float = 1.42
+@export var eye_height_ratio: float = 0.92
 @export var camera_forward_offset: float = -0.08
 @export var body_vertical_offset: float = -0.9
 @export var camera_near: float = 0.06
@@ -30,13 +32,17 @@ var camera_base_local_position: Vector3
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-	camera_pivot.position = Vector3(0.0, standing_eye_height, 0.0)
+	if auto_calibrate_body_height:
+		_auto_calibrate_body_and_camera()
+	else:
+		body_mesh.position.y = body_vertical_offset
+		camera_pivot.position = Vector3(0.0, standing_eye_height, 0.0)
+
 	camera.position = Vector3(0.0, 0.0, camera_forward_offset)
 	camera.near = camera_near
 	camera.fov = camera_fov
 	camera_base_local_position = camera.position
 
-	body_mesh.position.y = body_vertical_offset
 	_hide_first_person_head(body_mesh)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -80,6 +86,49 @@ func _update_camera_bob(delta: float) -> void:
 	else:
 		bob_time = 0.0
 		camera.position = camera.position.lerp(camera_base_local_position, min(1.0, delta * 10.0))
+
+func _auto_calibrate_body_and_camera() -> void:
+	var bounds := _collect_visual_bounds(body_mesh)
+	if bounds.size == Vector3.ZERO:
+		body_mesh.position.y = body_vertical_offset
+		camera_pivot.position = Vector3(0.0, standing_eye_height, 0.0)
+		return
+
+	var feet_to_origin_offset := -bounds.position.y
+	body_mesh.position.y = feet_to_origin_offset + body_vertical_offset
+
+	var body_height := bounds.size.y
+	var calibrated_eye_height := body_height * eye_height_ratio + body_vertical_offset
+	camera_pivot.position = Vector3(0.0, calibrated_eye_height, 0.0)
+
+func _collect_visual_bounds(root: Node3D) -> AABB:
+	var has_bounds := false
+	var merged := AABB()
+	var root_transform := root.global_transform
+
+	var stack: Array[Node3D] = [root]
+	while not stack.is_empty():
+		var current := stack.pop_back()
+		if current is VisualInstance3D:
+			var visual := current as VisualInstance3D
+			var local_aabb := visual.get_aabb()
+			if local_aabb.size != Vector3.ZERO:
+				var to_root := root_transform.affine_inverse() * visual.global_transform
+				var transformed := local_aabb
+				transformed = transformed * to_root
+				if has_bounds:
+					merged = merged.merge(transformed)
+				else:
+					merged = transformed
+					has_bounds = true
+
+		for child in current.get_children():
+			if child is Node3D:
+				stack.push_back(child)
+
+	if has_bounds:
+		return merged
+	return AABB()
 
 func _hide_first_person_head(root: Node) -> void:
 	if root is VisualInstance3D:
