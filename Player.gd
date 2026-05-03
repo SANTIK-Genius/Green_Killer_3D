@@ -6,8 +6,9 @@ extends CharacterBody3D
 @export var min_pitch_degrees: float = -80.0
 @export var max_pitch_degrees: float = 80.0
 
-@export var standing_eye_height: float = 1.62
-@export var camera_forward_offset: float = -0.16
+@export var standing_eye_height: float = 1.42
+@export var camera_forward_offset: float = -0.08
+@export var body_vertical_offset: float = -0.9
 @export var camera_near: float = 0.06
 @export var camera_fov: float = 80.0
 
@@ -35,6 +36,7 @@ func _ready() -> void:
 	camera.fov = camera_fov
 	camera_base_local_position = camera.position
 
+	body_mesh.position.y = body_vertical_offset
 	_hide_first_person_head(body_mesh)
 
 func _unhandled_input(event: InputEvent) -> void:
